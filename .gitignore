@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test & Coverage
+.pytest_cache/
+htmlcov/
+.coverage
+.hypothesis/
+.pytest_cache/
+junit.xml
+test-report.html
+
+# Allure
+allure-results/
+allure-report/
+
+# Build artifacts
+*.pyc
+*.pyo
+.cache/
+
+# Playwright
+.playwright/
+browser-logs/
+*.webm
+*.png
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+*.log
+.env
+.env.local
