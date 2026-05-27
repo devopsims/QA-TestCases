@@ -77,7 +77,7 @@ pipeline {
                     sh '''
                         set -e
                         . venv/bin/activate
-                        playwright install chromium --with-deps
+                        playwright install chromium
                         echo "✅ Chromium browser installed"
                     '''
                 }
