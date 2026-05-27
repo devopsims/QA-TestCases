@@ -63,7 +63,9 @@ pipeline {
                         python3 -m venv venv
                         . venv/bin/activate
                         pip install --upgrade pip -q
-                        pip install --only-binary :all: -r requirements.txt -q
+                        # Install build essentials if not present
+                        apt-get update -qq && apt-get install -y -qq build-essential python3-dev > /dev/null 2>&1 || true
+                        pip install -r requirements.txt -q
                         echo "✅ Virtual environment and dependencies installed"
                     '''
                 }
