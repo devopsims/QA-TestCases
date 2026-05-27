@@ -61,7 +61,7 @@ pipeline {
                     sh '''
                         set -e
                         python3 -m venv venv
-                        source venv/bin/activate
+                        . venv/bin/activate
                         pip install --upgrade pip -q
                         pip install -r requirements.txt -q
                         echo "✅ Virtual environment and dependencies installed"
@@ -76,7 +76,7 @@ pipeline {
                     echo "Installing Playwright browsers..."
                     sh '''
                         set -e
-                        source venv/bin/activate
+                        . venv/bin/activate
                         playwright install chromium --with-deps
                         echo "✅ Chromium browser installed"
                     '''
@@ -90,7 +90,7 @@ pipeline {
                     echo "Running QA tests against: ${params.DEPLOY_URL}"
                     sh '''
                         set -e
-                        source venv/bin/activate
+                        . venv/bin/activate
                         
                         # Create allure results directory
                         mkdir -p allure-results
@@ -117,7 +117,7 @@ pipeline {
                 script {
                     sh '''
                         set -e
-                        source venv/bin/activate
+                        . venv/bin/activate
                         
                         # Check if allure-results has data
                         if [ -d "allure-results" ] && [ "$(ls -A allure-results)" ]; then
