@@ -63,7 +63,7 @@ pipeline {
                         python3 -m venv venv
                         . venv/bin/activate
                         pip install --upgrade pip -q
-                        pip install -r requirements.txt -q
+                        pip install --only-binary :all: -r requirements.txt -q
                         echo "✅ Virtual environment and dependencies installed"
                     '''
                 }
