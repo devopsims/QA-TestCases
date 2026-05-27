@@ -91,6 +91,7 @@ pipeline {
                     sh '''
                         set -e
                         . venv/bin/activate
+                        export PYTHONPATH=.
                         
                         # Create allure results directory
                         mkdir -p allure-results
