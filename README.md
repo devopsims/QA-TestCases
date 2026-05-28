@@ -213,5 +213,5 @@ For issues:
 ---
 
 **Last Updated:** 2026-05-27  
-**Maintained by:** QA Team  
+**Maintained by:** Suchan Madhikarmi  
 **Framework:** Playwright (Python)
