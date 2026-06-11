@@ -60,10 +60,25 @@ pipeline {
                     echo "Setting up Python virtual environment..."
                     sh '''
                         set -e
-                        python3 -m venv venv
-                        . venv/bin/activate
+                        python3 -m venv .venv
+                        . .venv/bin/activate
                         pip install --upgrade pip -q
-                        pip install -r requirements.txt -q
+
+                        # clone or update the Playwright-Practice-IMS repo containing new tests
+                        if [ -d "Playwright-Practice-IMS" ]; then
+                            cd Playwright-Practice-IMS && git fetch --all && git reset --hard origin/main || true
+                            cd -
+                        else
+                            git clone https://github.com/Unknown3369/Playwright-Practice-IMS.git
+                        fi
+
+                        # install dependencies from the cloned tests repo
+                        if [ -f "Playwright-Practice-IMS/requirements.txt" ]; then
+                            pip install -r Playwright-Practice-IMS/requirements.txt -q
+                        else
+                            pip install -r requirements.txt -q
+                        fi
+
                         echo "✅ Virtual environment and dependencies installed"
                     '''
                 }
@@ -76,8 +91,10 @@ pipeline {
                     echo "Installing Playwright browsers..."
                     sh '''
                         set -e
-                        . venv/bin/activate
-                        playwright install chromium
+                        . .venv/bin/activate
+
+                        # use python module to install browsers (avoids sourcing wrapper)
+                        python -m playwright install chromium
                         echo "✅ Chromium browser installed"
                     '''
                 }
@@ -90,22 +107,25 @@ pipeline {
                     echo "Running QA tests against: ${params.DEPLOY_URL}"
                     sh '''
                         set -e
-                        . venv/bin/activate
-                        export PYTHONPATH=.
-                        
+                        . .venv/bin/activate
+
+                        # set test run environment
+                        export PYTHONPATH=Playwright-Practice-IMS
+                        export HEADLESS=${HEADLESS}
+
                         # Create allure results directory
-                        mkdir -p allure-results
-                        rm -rf allure-results/*
-                        
+                        mkdir -p Playwright-Practice-IMS/allure-results
+                        rm -rf Playwright-Practice-IMS/allure-results/*
+
                         # Run tests based on suite selection
                         if [ "${TEST_SUITE}" = "login" ]; then
-                            echo "Running Login Test..."
-                            HEADLESS=true pytest Tests/Test_login.py -v --alluredir=allure-results --html=test-report.html --self-contained-html || TEST_EXIT_CODE=$?
+                            echo "Running Login Test (Playwright-Practice-IMS)..."
+                            python -m pytest Playwright-Practice-IMS/Tests/Test_login.py -v --alluredir=Playwright-Practice-IMS/allure-results --html=Playwright-Practice-IMS/Reports/report.html --self-contained-html || TEST_EXIT_CODE=$?
                         else
-                            echo "Running All Tests..."
-                            HEADLESS=true pytest Tests/ -v --alluredir=allure-results --html=test-report.html --self-contained-html || TEST_EXIT_CODE=$?
+                            echo "Running All Tests (Playwright-Practice-IMS)..."
+                            python -m pytest Playwright-Practice-IMS/Tests/ -v --alluredir=Playwright-Practice-IMS/allure-results --html=Playwright-Practice-IMS/Reports/report.html --self-contained-html || TEST_EXIT_CODE=$?
                         fi
-                        
+
                         echo "Test execution completed"
                         exit ${TEST_EXIT_CODE:-0}
                     '''
